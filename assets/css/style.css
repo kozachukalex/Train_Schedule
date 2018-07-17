@@ -33,6 +33,14 @@ p{
     margin-bottom: 1vh;
     overflow: auto;
 }
+h5,
+#clearSchedule{
+    display: inline-block;
+}
+#clearSchedule{
+    position: absolute;
+    right: 10px;
+}
 .tableLabel{
     font-weight: 700;
 }

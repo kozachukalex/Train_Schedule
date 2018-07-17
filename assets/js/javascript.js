@@ -29,11 +29,11 @@ $(function () {
             var trainName = capitalizeFirstLetter(currentTrain.name)
             var destinationName = capitalizeFirstLetter(currentTrain.destination)
             var frequency = currentTrain.frequency
-            var firstTrainTime= currentTrain.time
+            var firstTrainTime = currentTrain.time
 
             //This section could use some iterating to clean up. Used to calculate minutesAway and to properly display the next arrival
             var firstTrainTime = firstTrainTime.split(':');
-            
+
             console.log(firstTrainTime);
             var hours = firstTrainTime[0];
             var minutes = firstTrainTime[1];
@@ -54,7 +54,7 @@ $(function () {
             currentTime = (currentHour * 60) + currentMinute
 
             console.log(currentTime)
-            
+
             minutesAway = firstTrainTime - currentTime + "m";
 
             if (hours > 12) {
@@ -125,6 +125,14 @@ $(function () {
         } else {
             alert("You must fill in all information.")
         };
+    });
+
+    $("#clearSchedule").on("click", function () {
+        database.set({
+            savedTrains: "",
+        });
+        trainList = [];
+
     });
 
     function capitalizeFirstLetter(string) {
