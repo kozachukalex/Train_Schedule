@@ -1,0 +1,38 @@
+html{
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+header{
+    height: 15vh;
+    margin-bottom: 3vh;
+}
+
+tr{
+    border-bottom: 2px lightgray solid;
+    line-height: 40px;
+}
+
+th{
+    font-weight: 400;
+    text-align: center;
+}
+
+input{
+    width: 100%;    
+    margin: 0 0 1vh;
+}
+
+p{
+    margin: 0;
+    padding: 0;
+}
+#schedule{
+    height: 40vh;
+    margin-bottom: 1vh;
+    overflow: auto;
+}
+.tableLabel{
+    font-weight: 700;
+}
