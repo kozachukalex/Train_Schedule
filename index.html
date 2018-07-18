@@ -12,34 +12,18 @@
     <link rel='stylesheet' href='assets/css/style.css'>
 
     <script src="https://www.gstatic.com/firebasejs/4.12.0/firebase.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/moment@2.22.2/moment.min.js"></script>
     <script src='https://cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js'></script>
     <script src='assets/js/javascript.js'></script>
 </head>
 
 <body>
 
-    <div class="container">
-        <header class="card align-items-center justify-content-center bg-primary text-white">
-            <h1> Trains Go Choo Choo</h1>
-        </header>
-        <div class="card" id="schedule">
-            <div class="card-header bg-primary text-white scheduleHeader">
-                <h5> Current Train Schedule </h5>
-                <button class= "btn btn-light" id="clearSchedule">Clear Schedule</button>
-            </div>
-            <div class="card-body">
-                <table id="scheduleTable" style="width: 100%">
-                    <tr>
-                        <th class="tableLabel"> Train Name </th>
-                        <th class="tableLabel"> Destination </th>
-                        <th class="tableLabel"> Frequency (min) </th>
-                        <th class="tableLabel"> Next Arrival </th>
-                        <th class="tableLabel"> Minutes Away </th>
-                    </tr>
-                </table>
-            </div>
-        </div>
-        <div class="card">
+    <header class="align-items-center justify-content-center">
+        <h1 class="container "> Trains Go Choo Choo</h1>
+    </header>
+    <div class="row content">
+        <div class="card" id="addTrainInputArea">
             <h5 class="card-header bg-primary text-white"> Add Train </h5>
             <form class="card-body">
                 <p> Train Name </p>
@@ -52,6 +36,21 @@
                 <input type="text" id="newTrainFrequency">
                 <input type="submit" class="btn btn-primary" id="addNewTrain">
             </form>
+        </div>
+        <div class="card" id="schedule">
+            <h5 class="card-header bg-primary text-white ">Train Schedule </h5>
+            <div class="card-body">
+                <table id="scheduleTable" style="width: 100%">
+                    <tr>
+                        <th class="tableLabel"> Train Name </th>
+                        <th class="tableLabel"> Destination </th>
+                        <th class="tableLabel"> Frequency (min) </th>
+                        <th class="tableLabel"> Next Arrival </th>
+                        <th class="tableLabel"> Minutes Away </th>
+                        <th class="tableLabel"> Remove </th>
+                    </tr>
+                </table>
+            </div>
         </div>
     </div>
 

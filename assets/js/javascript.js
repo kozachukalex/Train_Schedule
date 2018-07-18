@@ -11,131 +11,85 @@ $(function () {
     };
 
     trainList = [];
-
-
+    trainNumber = 0;
 
     firebase.initializeApp(config);
 
     database = firebase.database().ref('trainTest');
 
-    database.on("value", function (snapshot) {
-        //This allows to reset the table (minus label row) so anytime value changes the entire schedule is updated and not just continuous appending causing repeats
-        $("#scheduleTable").find("tr:gt(0)").remove();
+    database.on("child_added", function (snapshot) {
 
-        trainList = snapshot.val().savedTrains;
-        for (let i = 0; i < trainList.length; i++) {
+        var info = snapshot.val();
+        trainList.push(info)
+        console.log(trainList)
+        console.log(snapshot.key)
 
-            var currentTrain = trainList[i];
-            var trainName = capitalizeFirstLetter(currentTrain.name)
-            var destinationName = capitalizeFirstLetter(currentTrain.destination)
-            var frequency = currentTrain.frequency
-            var firstTrainTime = currentTrain.time
+        var trainName = info.name
+        var trainName = capitalizeFirstLetter(trainName)
 
-            //This section could use some iterating to clean up. Used to calculate minutesAway and to properly display the next arrival
-            var firstTrainTime = firstTrainTime.split(':');
+        var trainDestination = info.destination
+        var trainDestination = capitalizeFirstLetter(trainDestination)
 
-            console.log(firstTrainTime);
-            var hours = firstTrainTime[0];
-            var minutes = firstTrainTime[1];
-            var firstTrainTime = (parseInt(hours) * 60) + parseInt(minutes);
+        var time = info.firstTime
+        var time = moment(time, "HH:mm").format("hh:mm A")
 
+        var $tr = $("<tr>").attr("id", snapshot.key).attr("data-number", trainNumber)
+        var name = $("<td>").append(trainName)
+        var destination = $("<td>").append(trainDestination)
+        var frequency = $("<td>").append(info.frequency)
+        var firstArrival = $("<td>").append(time)
+        var minutesAway = $("<td>").append(minutesAway)
+        var button = $("<button>").addClass("deleteButton").attr("data-index", trainNumber).html("x")
+        var buttonColumn = $("<td>").append(button)
 
-            console.log(hours);
-            console.log(minutes);
-            console.log(firstTrainTime)
+        $tr.append(name)
+            .append(destination)
+            .append(frequency)
+            .append(firstArrival)
+            .append(minutesAway)
+            .append(buttonColumn)
 
-            var date = new Date();
-            var currentHour = date.getHours();
-            var currentMinute = date.getMinutes();
-
-            console.log(currentHour);
-            console.log(currentMinute);
-
-            currentTime = (currentHour * 60) + currentMinute
-
-            console.log(currentTime)
-
-            minutesAway = firstTrainTime - currentTime + "m";
-
-            if (hours > 12) {
-                hours = (hours - 12)
-                firstTrainTime = hours + ":" + minutes + " PM"
-            } else {
-                firstTrainTime = hours + ":" + minutes + " AM"
-            }
-            //
-
-            var $thName = $("<th>").html(trainName)
-            var $thDestination = $("<th>").html(destinationName)
-            var $thFrequency = $("<th>").html(frequency)
-            var $thminutesAway = $("<th>").html(minutesAway)
-            var $thFirstTrainTime = $("<th>").html(firstTrainTime)
-            var $tr = $("<tr>").attr("id", trainName)
-            $tr.append($thName)
-                .append($thDestination)
-                .append($thFrequency)
-                .append($thFirstTrainTime)
-                .append($thminutesAway);
-
-            $("#scheduleTable").append($tr)
-
-        }
-
-    }, function (errorObject) {
-        console.log("Errors handled: " + errorObject.code);
-    });
+        $("#scheduleTable").append($tr);
+        trainNumber++;
+    })
 
     $("#addNewTrain").on("click", function () {
+
         event.preventDefault();
 
-        var newTrainName = $("#newTrainName").val().trim();
-        var newDestination = $("#newDestination").val().trim();
-        var newTrainFrequency = $("#newTrainFrequency").val();
-        var firstTrainTime = $("#firstTrainTime").val();
+        var name = $("#newTrainName").val().trim();
+        var destination = $("#newDestination").val().trim();
+        var firstTime = $("#firstTrainTime").val().trim();
+        var frequency = $("#newTrainFrequency").val().trim();
 
-
-
-        if ((newTrainName !== "") && //verifies that each field is filled in
-            (newDestination !== "") &&
-            (firstTrainTime !== "") &&
-            (newTrainFrequency !== "")) {
-
-            var train = {
-                name: newTrainName,
-                destination: newDestination,
-                time: firstTrainTime,
-                frequency: newTrainFrequency,
-            };
-            console.log(train);
-
-
-            trainList.push(train)
-
-            console.log(trainList)
-
-            database.set({
-                savedTrains: trainList,
-            });
-
-            var newTrainName = $("#newTrainName").val("");
-            var newTrainName = $()
-            var newDestination = $("#newDestination").val("");
-            var firstTrainTime = $("#firstTrainTime").val("");
-            var newTrainFrequency = $("#newTrainFrequency").val("");
-        } else {
-            alert("You must fill in all information.")
+        var information = {
+            name: name,
+            destination: destination,
+            firstTime: firstTime,
+            frequency: frequency,
         };
+
+        database.push(information);
+        trainNumber++;
+        console.log(trainList)
+        $("#newTrainName").val("")
+        $("#newDestination").val("")
+        $("#firstTrainTime").val("")
+        $("#newTrainFrequency").val("")
     });
 
-    $("#clearSchedule").on("click", function () {
-        database.set({
-            savedTrains: "",
-        });
-        trainList = [];
+    $(document).on("click", ".deleteButton", function () {
+        var index = $(this).attr("data-index");
+        var key = $("[data-number='"+index+"']").attr("id")
 
+        $("[data-number='"+index+"']").remove();
+        //By splicing with an empty space, allows me to verify the item is removed and doesn't throw off the other index numbers
+        trainList.splice(index, 1,"")
+        database.child(key).remove()
     });
 
     function capitalizeFirstLetter(string) {
         return string.charAt(0).toUpperCase() + string.slice(1);
-    }
+    };
+
 });

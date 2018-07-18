@@ -5,42 +5,57 @@ html{
 }
 
 header{
-    height: 15vh;
-    margin-bottom: 3vh;
+    height: 250px;
+    margin-bottom: 25px;
+    background-image: url(../images/trainBackground.webp);
+    background-size: cover;
 }
 
 tr{
     border-bottom: 2px lightgray solid;
     line-height: 40px;
+    text-align: center;
+}
+tr:nth-of-type(even){
+    background: lightyellow
 }
 
-th{
+td{
     font-weight: 400;
     text-align: center;
 }
 
 input{
     width: 100%;    
-    margin: 0 0 1vh;
+    margin: 5px 0 15px;
 }
 
 p{
     margin: 0;
     padding: 0;
 }
+.content{
+    margin-left: 1%;
+    margin-right: 1%;
+}
+#addTrainArea{
+    height: 500px;
+}
 #schedule{
-    height: 40vh;
-    margin-bottom: 1vh;
+    height: 600px;
+    width: 75%;
     overflow: auto;
 }
-h5,
-#clearSchedule{
-    display: inline-block;
+
+#addTrainInputArea{
+    height: 400px;
+    width: 22%;
+    margin-right: 1%
 }
-#clearSchedule{
-    position: absolute;
-    right: 10px;
-}
+
 .tableLabel{
     font-weight: 700;
+}
+.deleteButton{
+    width: 30%;
 }
