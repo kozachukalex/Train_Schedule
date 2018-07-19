@@ -44,6 +44,8 @@ p{
 .content{
     margin-left: 1%;
     margin-right: 1%;
+    display: flex;
+    flex-flow: row;
 }
 #addTrainArea{
     height: 500px;
@@ -55,7 +57,7 @@ p{
 }
 
 #addTrainInputArea{
-    height: 425px;
+    height: 475px;
     width: 22%;
     margin-right: 1%
 }
@@ -68,4 +70,18 @@ p{
     width: 40px;
     height: 60px;
     padding: 0;
+}
+
+@media screen and (max-width: 765px){
+    .content{
+        flex-flow: column;
+    }
+    #schedule,
+    #addTrainInputArea{
+        width: 100%;
+    }
+    #addTrainInputArea{
+        height: 440px;
+        margin-bottom: 2%;
+    }
 }

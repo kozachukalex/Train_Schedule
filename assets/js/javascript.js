@@ -30,8 +30,7 @@ $(function () {
         var trainDestination = info.destination
         var trainDestination = capitalizeFirstLetter(trainDestination)
 
-        var time = info.firstTime
-        var time = moment(time, "HH:mm").format("hh:mm A")
+        calculateTime(info);
 
         var $tr = $("<tr>").attr("id", snapshot.key).attr("data-number", trainNumber)
         var name = $("<td>").append(trainName)
@@ -51,7 +50,41 @@ $(function () {
 
         $("#scheduleTable").append($tr);
         trainNumber++;
-    })
+    });
+
+    function calculateTime(info) {
+        var firstArrival = info.firstTime
+        var firstArrival = firstArrival.split(":");
+        var arrivalHours = firstArrival[0]
+        var arrivalMinutes = firstArrival[1]
+        var totalFirstArrival = (arrivalHours * 60) + parseInt(arrivalMinutes)
+
+        var currentTime = moment().format("HH:mm A")
+        var currentTime = currentTime.split(":");
+        var currentHours0 = currentTime[0]
+        var currentMinutes1 = currentTime[1]
+        var totalCurrentTime = (currentHours0 * 60) + parseInt(currentMinutes1)
+
+        do {
+            totalFirstArrival = parseInt(totalFirstArrival) + parseInt(info.frequency);
+        }
+        while (totalFirstArrival < totalCurrentTime);
+
+        var totalFirstArrivalHours = Math.floor(totalFirstArrival / 60)
+        var totalFirstArrivalMinutes = totalFirstArrival % 60
+
+        if (totalFirstArrivalMinutes === 0) {
+            totalFirstArrivalMinutes = "00"
+        }
+        var totalFirstArrivalAgain = totalFirstArrivalHours + ":" + totalFirstArrivalMinutes
+        
+        //Time is coming out of the function and appending but minutesAway is not
+        time = moment(totalFirstArrivalAgain, "HH:mm").format("hh:mm A")
+        minutesAway = parseInt(totalFirstArrival) - parseInt(totalCurrentTime) + " m"
+
+        console.log(time);
+        console.log(minutesAway);
+    };
 
     $("#addNewTrain").on("click", function () {
 
@@ -80,11 +113,11 @@ $(function () {
 
     $(document).on("click", ".deleteButton", function () {
         var index = $(this).attr("data-index");
-        var key = $("[data-number='"+index+"']").attr("id")
+        var key = $("[data-number='" + index + "']").attr("id")
 
-        $("[data-number='"+index+"']").remove();
+        $("[data-number='" + index + "']").remove();
         //By splicing with an empty space, allows me to verify the item is removed and doesn't throw off the other index numbers
-        trainList.splice(index, 1,"")
+        trainList.splice(index, 1, "")
         database.child(key).remove()
     });
 
