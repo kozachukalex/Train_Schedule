@@ -19,7 +19,7 @@ $(function () {
 
     database.on("child_added", function (snapshot) {
 
-        var info = snapshot.val();
+        info = snapshot.val();
         trainList.push(info)
         console.log(trainList)
         console.log(snapshot.key)
@@ -30,23 +30,23 @@ $(function () {
         var trainDestination = info.destination
         var trainDestination = capitalizeFirstLetter(trainDestination)
 
-        calculateTime(info);
+        calculateTime(info)
 
         var $tr = $("<tr>").attr("id", snapshot.key).attr("data-number", trainNumber)
-        var name = $("<td>").append(trainName)
-        var destination = $("<td>").append(trainDestination)
-        var frequency = $("<td>").append(info.frequency)
-        var firstArrival = $("<td>").append(time)
-        var minutesAway = $("<td>").append(minutesAway)
-        var button = $("<button>").addClass("deleteButton").attr("data-index", trainNumber).html("x")
-        var buttonColumn = $("<td>").append(button)
+        var $name = $("<td>").append(trainName)
+        var $destination = $("<td>").append(trainDestination)
+        var $frequency = $("<td>").append(info.frequency)
+        var $firstArrival = $("<td>").append(time)
+        var $minutesAway = $("<td>").append(minutesAway)
+        var $button = $("<button>").addClass("deleteButton").attr("data-index", trainNumber).html("x")
+        var $buttonColumn = $("<td>").append($button)
 
-        $tr.append(name)
-            .append(destination)
-            .append(frequency)
-            .append(firstArrival)
-            .append(minutesAway)
-            .append(buttonColumn)
+        $tr.append($name)
+            .append($destination)
+            .append($frequency)
+            .append($firstArrival)
+            .append($minutesAway)
+            .append($buttonColumn)
 
         $("#scheduleTable").append($tr);
         trainNumber++;
@@ -77,13 +77,17 @@ $(function () {
             totalFirstArrivalMinutes = "00"
         }
         var totalFirstArrivalAgain = totalFirstArrivalHours + ":" + totalFirstArrivalMinutes
-        
-        //Time is coming out of the function and appending but minutesAway is not
-        time = moment(totalFirstArrivalAgain, "HH:mm").format("hh:mm A")
-        minutesAway = parseInt(totalFirstArrival) - parseInt(totalCurrentTime) + " m"
 
-        console.log(time);
+        //Time is coming out of the function and appending but minutesAway is not
+        minutesAway = totalFirstArrival - totalCurrentTime;
+        time = moment(totalFirstArrivalAgain, "HH:mm").format("hh:mm A");
+
+        if (minutesAway === 0){
+            minutesAway = "Arriving"
+        }
         console.log(minutesAway);
+        console.log(time)
+
     };
 
     $("#addNewTrain").on("click", function () {

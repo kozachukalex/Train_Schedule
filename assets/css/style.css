@@ -9,6 +9,8 @@ header{
     margin-bottom: 25px;
     background-image: url(../images/trainBackground.webp);
     background-size: cover;
+    display: flex;
+    align-items: flex-end
 }
 
 #headerTitle{
@@ -73,6 +75,13 @@ p{
 }
 
 @media screen and (max-width: 765px){
+    header{
+        justify-content: space-around;
+    }
+    #headerTitle{
+        font-size: 35px;
+        margin: 0;
+    }
     .content{
         flex-flow: column;
     }
@@ -84,4 +93,5 @@ p{
         height: 440px;
         margin-bottom: 2%;
     }
+
 }
