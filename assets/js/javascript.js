@@ -30,14 +30,15 @@ $(function () {
         var trainDestination = info.destination
         var trainDestination = capitalizeFirstLetter(trainDestination)
 
-        calculateTime(info)
+
+        
 
         var $tr = $("<tr>").attr("id", snapshot.key).attr("data-number", trainNumber)
         var $name = $("<td>").append(trainName)
         var $destination = $("<td>").append(trainDestination)
         var $frequency = $("<td>").append(info.frequency)
-        var $firstArrival = $("<td>").append(time)
-        var $minutesAway = $("<td>").append(minutesAway)
+        var $firstArrival = $("<td>").attr("id", "fa"+info.name)
+        var $minutesAway = $("<td>").attr("id", "ma"+info.name)
         var $button = $("<button>").addClass("deleteButton").attr("data-index", trainNumber).html("x")
         var $buttonColumn = $("<td>").append($button)
 
@@ -50,9 +51,17 @@ $(function () {
 
         $("#scheduleTable").append($tr);
         trainNumber++;
+
+        //interval only sets on the last child...
+            calculateTime(info)
+        setInterval(function() {
+            calculateTime(info);
+          }, 5000);
     });
 
     function calculateTime(info) {
+
+        console.log("time calc'd")
         var firstArrival = info.firstTime
         var firstArrival = firstArrival.split(":");
         var arrivalHours = firstArrival[0]
@@ -73,12 +82,8 @@ $(function () {
         var totalFirstArrivalHours = Math.floor(totalFirstArrival / 60)
         var totalFirstArrivalMinutes = totalFirstArrival % 60
 
-        if (totalFirstArrivalMinutes === 0) {
-            totalFirstArrivalMinutes = "00"
-        }
         var totalFirstArrivalAgain = totalFirstArrivalHours + ":" + totalFirstArrivalMinutes
 
-        //Time is coming out of the function and appending but minutesAway is not
         minutesAway = totalFirstArrival - totalCurrentTime;
         time = moment(totalFirstArrivalAgain, "HH:mm").format("hh:mm A");
 
@@ -87,6 +92,9 @@ $(function () {
         }
         console.log(minutesAway);
         console.log(time)
+
+        $("#fa"+info.name).html(time)
+        $("#ma"+info.name).html(minutesAway)
 
     };
 
