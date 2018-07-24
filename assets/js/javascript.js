@@ -20,81 +20,84 @@ $(function () {
     database.on("child_added", function (snapshot) {
 
         info = snapshot.val();
-        trainList.push(info)
-        console.log(trainList)
-        console.log(snapshot.key)
+        trainList.push(info);
+        console.log(trainList);
+        console.log(snapshot.key);
 
-        var trainName = info.name
-        var trainName = capitalizeFirstLetter(trainName)
+        var trainName = info.name;
+        var trainName = capitalizeFirstLetter(trainName);
 
-        var trainDestination = info.destination
-        var trainDestination = capitalizeFirstLetter(trainDestination)
+        var trainDestination = info.destination;
+        var trainDestination = capitalizeFirstLetter(trainDestination);
 
 
-        
 
-        var $tr = $("<tr>").attr("id", snapshot.key).attr("data-number", trainNumber)
-        var $name = $("<td>").append(trainName)
-        var $destination = $("<td>").append(trainDestination)
-        var $frequency = $("<td>").append(info.frequency)
-        var $firstArrival = $("<td>").attr("id", "fa"+info.name)
-        var $minutesAway = $("<td>").attr("id", "ma"+info.name)
-        var $button = $("<button>").addClass("deleteButton").attr("data-index", trainNumber).html("x")
-        var $buttonColumn = $("<td>").append($button)
+
+        var $tr = $("<tr>").attr("id", snapshot.key).attr("data-number", trainNumber);
+        var $name = $("<td>").append(trainName);
+        var $destination = $("<td>").append(trainDestination);
+        var $frequency = $("<td>").append(info.frequency);
+        var $firstArrival = $("<td>").attr("id", "fa" + info.name);
+        var $minutesAway = $("<td>").attr("id", "ma" + info.name);
+        var $button = $("<button>").addClass("deleteButton").attr("data-index", trainNumber).html("x");
+        var $buttonColumn = $("<td>").append($button);
 
         $tr.append($name)
             .append($destination)
             .append($frequency)
             .append($firstArrival)
             .append($minutesAway)
-            .append($buttonColumn)
+            .append($buttonColumn);
 
         $("#scheduleTable").append($tr);
         trainNumber++;
 
-        //interval only sets on the last child...
-            calculateTime(info)
-        setInterval(function() {
-            calculateTime(info);
-          }, 5000);
+        calculateTime(info);
+        //interval only sets on the last child
+        //will cause the interval to be called every 5 seconds the number of children times....but only on the last added
+
+        // setInterval(function() {
+        //     calculateTime(info);
+        //   }, 5000);
     });
 
     function calculateTime(info) {
 
-        console.log("time calc'd")
-        var firstArrival = info.firstTime
+        console.log("time calc'd");
+        var firstArrival = info.firstTime;
         var firstArrival = firstArrival.split(":");
-        var arrivalHours = firstArrival[0]
-        var arrivalMinutes = firstArrival[1]
-        var totalFirstArrival = (arrivalHours * 60) + parseInt(arrivalMinutes)
+        var arrivalHours = firstArrival[0];
+        var arrivalMinutes = firstArrival[1];
+        var totalFirstArrival = (arrivalHours * 60) + parseInt(arrivalMinutes);
 
-        var currentTime = moment().format("HH:mm A")
+        var currentTime = moment().format("HH:mm A");
         var currentTime = currentTime.split(":");
-        var currentHours0 = currentTime[0]
-        var currentMinutes1 = currentTime[1]
-        var totalCurrentTime = (currentHours0 * 60) + parseInt(currentMinutes1)
+        var currentHours0 = currentTime[0];
+        var currentMinutes1 = currentTime[1];
+        var totalCurrentTime = (currentHours0 * 60) + parseInt(currentMinutes1);
 
-        do {
-            totalFirstArrival = parseInt(totalFirstArrival) + parseInt(info.frequency);
-        }
-        while (totalFirstArrival < totalCurrentTime);
+        if (firstArrival < totalCurrentTime) {
+            do {
+                totalFirstArrival = parseInt(totalFirstArrival) + parseInt(info.frequency);
+            }
+            while (totalFirstArrival < totalCurrentTime);
+        };
 
-        var totalFirstArrivalHours = Math.floor(totalFirstArrival / 60)
-        var totalFirstArrivalMinutes = totalFirstArrival % 60
+        var totalFirstArrivalHours = Math.floor(totalFirstArrival / 60);
+        var totalFirstArrivalMinutes = totalFirstArrival % 60;
 
-        var totalFirstArrivalAgain = totalFirstArrivalHours + ":" + totalFirstArrivalMinutes
+        var totalFirstArrivalAgain = totalFirstArrivalHours + ":" + totalFirstArrivalMinutes;
+
 
         minutesAway = totalFirstArrival - totalCurrentTime;
         time = moment(totalFirstArrivalAgain, "HH:mm").format("hh:mm A");
 
-        if (minutesAway === 0){
+        if (minutesAway === 0) {
             minutesAway = "Arriving"
-        }
-        console.log(minutesAway);
-        console.log(time)
+        };
 
-        $("#fa"+info.name).html(time)
-        $("#ma"+info.name).html(minutesAway)
+        $("#fa" + info.name).html(time)
+        $("#ma" + info.name).html(minutesAway)
 
     };
 
